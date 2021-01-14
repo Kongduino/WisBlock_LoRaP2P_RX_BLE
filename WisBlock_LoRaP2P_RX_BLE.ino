@@ -251,8 +251,23 @@ void loop() {
           u8g2.clearBuffer(); // clear the internal memory
           u8g2.drawStr(3, 15, "Frequency:");
           u8g2.drawStr(3, 30, s.c_str());
-          u8g2.sendBuffer(); // transfer internal memory to the display
+          u8g2.sendBuffer();
         }
+        return;
+      }
+      if (c1 == 'S') {
+        // Send packet
+        // I haven't installed AES & JSON yet, so we'll send a raw packet.
+        uint8_t ln = strlen((char*)cmd) - 2;
+        Serial.print("Sending ");
+        Serial.print(cmd + 2);
+        Serial.print("...");
+        Radio.Send((uint8_t*)cmd + 2, ln);
+        Serial.println(" done!");
+        u8g2.drawStr(3, 45, "Sent...");
+        u8g2.sendBuffer();
+        bleuart.print("Message sent.");
+        return;
       }
     }
   }
